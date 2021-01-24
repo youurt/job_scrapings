@@ -34,9 +34,9 @@ class MonsterSpider(scrapy.Spider):
                     callback=self.parse_text,
                     dont_filter=True,
                     cb_kwargs=dict(company_link=company_link, title=title, title_link=title_link,
-                                   date_posted=date_posted, location=location, company=company)
+                                   date_posted=date_posted, location=location, company=company))
 
     def parse_text(self, response, company_link, title, title_link, date_posted, location, company,):
-        description=chompjs.parse_js_object(response.xpath(
+        description = chompjs.parse_js_object(response.xpath(
             "//script[contains(., 'JobPosting')]/text()").extract()[0])["description"]
         yield {"company_link": company_link, "title": title, "title_link": title_link, "date_posted": date_posted, "location": location, "company": company, "description": description}
