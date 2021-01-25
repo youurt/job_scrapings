@@ -1,7 +1,7 @@
 import scrapy
 from scrapy import Request
 from scrapy.selector import Selector
-import re
+
 KEYWORDS = "junior%20frontend%20web%20developer"
 
 
