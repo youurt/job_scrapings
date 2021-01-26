@@ -1,8 +1,9 @@
 import scrapy
 from scrapy import Request
 from scrapy.selector import Selector
+import uuid
 
-KEYWORDS = "junior-frontend-developer"
+# KEYWORDS = "junior-frontend-developer"
 
 
 class GlassdoorSpider(scrapy.Spider):
@@ -11,7 +12,7 @@ class GlassdoorSpider(scrapy.Spider):
 
     def start_requests(self):
         yield Request(
-            url=f"https://www.glassdoor.com/Job/germany-{KEYWORDS}-jobs-SRCH_IL.0,7_IN96_KO8,33.htm?fromAge=20",
+            url=f"https://www.glassdoor.com/Job/germany-{self.search_params}-jobs-SRCH_IL.0,7_IN96_KO8,33.htm?fromAge=20",
             dont_filter=True,
             callback=self.parse_first)
 
@@ -28,13 +29,13 @@ class GlassdoorSpider(scrapy.Spider):
                     "a").css("span::text").getall()[1]
                 location = "".join(html.css(".loc::text").getall())
 
-                yield {"comp_name": comp_name, "position": position, "location": location, "link": link}
+                yield {"company_name": comp_name, "job_title": position, "location": location, "job_id": uuid.uuid4(), "link": link, }
         print(response)
         disabled = response.css(".pagingControls").css(
             ".cell").css(".middle").css("li").css(".next").css("a").css("span").css(".disabled").get()
         if disabled is None:
             self.start_ += 1
             yield Request(
-                url=f"https://www.glassdoor.com/Job/germany-{KEYWORDS}-jobs-SRCH_IL.0,7_IN96_KO8,33_IP{self.start_}.htm?fromAge=20",
+                url=f"https://www.glassdoor.com/Job/germany-{self.search_params}-jobs-SRCH_IL.0,7_IN96_KO8,33_IP{self.start_}.htm?fromAge=20",
                 dont_filter=True,
                 callback=self.parse_first)

@@ -8,17 +8,19 @@ class GlassdoorTextSpider(scrapy.Spider):
     name = 'glassdoor_text'
 
     def start_requests(self):
-        for link in pd.read_csv("res_glassdoor.csv", converters={"link": lambda x: str(x)})["link"]:
+        # for item in pd.read_csv(f"data_{self.topic}/glassdoor_raw.csv", converters={"link": lambda x: str(x)}):
+
+        for index, row in pd.read_csv(f"data_{self.topic}/glassdoor/glassdoor_raw.csv").iterrows():
             yield Request(
-                url=link,
+                url=row['link'],
                 dont_filter=True,
                 callback=self.parse_text,
-                cb_kwargs=dict(link=link))
+                cb_kwargs=dict(link=row['link'], job_id=row['job_id']))
 
-    def parse_text(self, response, link):
+    def parse_text(self, response, link, job_id):
         text = self.cleanhtml("".join(response.css(
             "#JobDescriptionContainer").css(".desc").getall()))
-        yield {"text": text, "link": link}
+        yield {"text": text, "job_id": job_id, "link": link}
 
     def cleanhtml(self, raw_html):
         cleanr = re.compile('<.*?>')

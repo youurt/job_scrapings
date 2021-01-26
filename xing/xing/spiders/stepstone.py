@@ -2,15 +2,16 @@ import scrapy
 from scrapy import Request
 from scrapy.selector import Selector
 
-KEYWORDS = "junior%20frontend%20web%20developer"
+# ArgUMENTS -a [QUERY] eg junior%20frontend%20web%20developer
 
 
 class StepstoneSpider(scrapy.Spider):
     name = 'stepstone'
 
     def start_requests(self):
+        keywords = self.search_params
         yield Request(
-            url=f"https://www.stepstone.de/5/ergebnisliste.html?stf=freeText&ns=1&companyid=0&sourceofthesearchfield=resultlistpage%3Ageneral&qs=%5B%5D&cityid=0&ke={KEYWORDS}&radius=30&suid=713ac238-0c15-4b82-b64b-86fa623b4cef&ex=90001&ob=date&action=sort_publish",
+            url=f"https://www.stepstone.de/5/ergebnisliste.html?stf=freeText&ns=1&companyid=0&sourceofthesearchfield=resultlistpage%3Ageneral&qs=%5B%5D&cityid=0&ke={keywords}&radius=30&suid=713ac238-0c15-4b82-b64b-86fa623b4cef&ex=90001&ob=date&action=sort_publish",
             dont_filter=True,
             callback=self.parse_page)
 
@@ -24,7 +25,7 @@ class StepstoneSpider(scrapy.Spider):
                 "".join(html.css("a::attr(href)").getall()).split("/")[1]
             title = "".join(html.css("h2::text").getall())
 
-            yield {"title": title, "link": link}
+            yield {"job_title": title, "link": link}
 
         next = response.xpath(
             '//*[contains(@class,"PaginationWrapper-sc-1x0i53i-0")]').css("a::attr(href)").getall()[-1]

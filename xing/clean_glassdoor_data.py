@@ -2,6 +2,7 @@ import pandas as pd
 
 
 def clean_df(csv_file):
+
     df = pd.read_csv(csv_file)
     df["position"] = df["position"].str.lower()
     df["location"] = df["location"].str.lower()

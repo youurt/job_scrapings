@@ -1,0 +1,12 @@
+job_title
+company_name
+company_link
+link
+location
+days_difftext
+activated_at
+
+
+keywords = self.search_params
+
+monster, xing no text parsing needed

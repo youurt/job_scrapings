@@ -5,8 +5,8 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-KEYWORDS = "junior+web+developer"
-NO_GOES = "+-java+-php+-senior+-.net+-c%23"
+#KEYWORDS = "junior+web+developer"
+#NO_GOES = "+-java+-php+-.net+-c%23"
 
 
 class IndeedSpider(scrapy.Spider):
@@ -14,7 +14,7 @@ class IndeedSpider(scrapy.Spider):
 
     def start_requests(self):
         yield Request(
-            url=f"https://de.indeed.com/Jobs?q={KEYWORDS}{NO_GOES}&l=Deutschland&radius=25&start",
+            url=f"https://de.indeed.com/Jobs?q={self.search_params}{self.search_params_no}&l=Deutschland&radius=25&start",
             dont_filter=True,
             callback=self.parse_pages)
 
@@ -38,7 +38,7 @@ class IndeedSpider(scrapy.Spider):
                 ".sjcl").css(".location::text").getall())
             activated = "".join(html.css(
                 ".result-link-bar").css(".date::text").getall())
-            yield {"title": title, "link": link, "company": company, "location": location, "activated": activated}
+            yield {"job_title": title, "link": link, "company_name": company, "location": location, "activated_at": activated}
 
         print(response)
         if 'span class="np"' in response.css(

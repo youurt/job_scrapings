@@ -3,7 +3,7 @@ import scrapy
 from scrapy import Request
 from scrapy.selector import Selector
 
-KEYWORDS = "junior%20web%20developer"
+# KEYWORDS = "junior%20web%20developer"
 
 logger = logging.getLogger(__name__)
 
@@ -14,7 +14,7 @@ class LinkedinSpider(scrapy.Spider):
 
     def start_requests(self):
         yield Request(
-            url=f"https://www.linkedin.com/jobs-guest/jobs/api/seeMoreJobPostings/search?f_E=2&f_TPR=r604800&geoId=101282230&keywords={KEYWORDS}&location=Deutschland",
+            url=f"https://www.linkedin.com/jobs-guest/jobs/api/seeMoreJobPostings/search?f_E=2&f_TPR=r604800&geoId=101282230&keywords={self.search_params}&location=Deutschland",
             dont_filter=True,
             callback=self.parse_first_page)
 
@@ -30,11 +30,11 @@ class LinkedinSpider(scrapy.Spider):
                 ".job-result-card__location::text").getall())
             list_date = " ".join(Selector(text=element).css(
                 ".job-result-card__listdate::text").getall())
-            yield {"job_name": job_name, "link": link, "location": location, "list_date": list_date}
+            yield {"job_title": job_name, "link": link, "location": location, "activated_at": list_date}
         print(response, response.status)
         if response.status == 200:
             self.start_ += 25
             yield Request(
-                url=f"https://www.linkedin.com/jobs-guest/jobs/api/seeMoreJobPostings/search?f_E=2&f_TPR=r604800&geoId=101282230&keywords={KEYWORDS}&location=Deutschland&start={self.start_}",
+                url=f"https://www.linkedin.com/jobs-guest/jobs/api/seeMoreJobPostings/search?f_E=2&f_TPR=r604800&geoId=101282230&keywords={self.search_params}&location=Deutschland&start={self.start_}",
                 dont_filter=True,
                 callback=self.parse_first_page)

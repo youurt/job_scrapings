@@ -2,7 +2,8 @@ import scrapy
 from scrapy import Request
 import json
 import chompjs
-KEYWORDS = "junior-developer-web"
+import re
+# KEYWORDS = "junior-developer-web"
 
 
 class MonsterSpider(scrapy.Spider):
@@ -11,7 +12,7 @@ class MonsterSpider(scrapy.Spider):
     def start_requests(self):
         for i in range(5):
             yield Request(
-                url=f"https://www.monster.de/jobs/suche/pagination/?q={KEYWORDS}&cy=DE&isDynamicPage=true&isMKPagination=true&page={i}",
+                url=f"https://www.monster.de/jobs/suche/pagination/?q={self.search_params}&cy=DE&isDynamicPage=true&isMKPagination=true&page={i}",
                 dont_filter=True,
                 callback=self.parse_data)
 
@@ -37,6 +38,14 @@ class MonsterSpider(scrapy.Spider):
                                    date_posted=date_posted, location=location, company=company))
 
     def parse_text(self, response, company_link, title, title_link, date_posted, location, company,):
-        description = chompjs.parse_js_object(response.xpath(
-            "//script[contains(., 'JobPosting')]/text()").extract()[0])["description"]
-        yield {"company_link": company_link, "title": title, "title_link": title_link, "date_posted": date_posted, "location": location, "company": company, "description": description}
+        description = self.cleanhtml(chompjs.parse_js_object(response.xpath(
+            "//script[contains(., 'JobPosting')]/text()").extract()[0])["description"])
+        yield {"company_link": company_link, "job_title": title, "link": title_link, "activated_at": date_posted, "location": location, "company_name": company, "text": description}
+
+    def cleanhtml(self, raw_html):
+        cleanr = re.compile('<.*?>')
+        cleantext = re.sub(cleanr, '', raw_html)
+        cleantext = cleantext.replace("\n", "")
+        cleantext = cleantext.replace("\t", "")
+        cleantext = cleantext.replace("\r", "")
+        return cleantext.strip()
