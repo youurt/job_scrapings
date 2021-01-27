@@ -3,6 +3,7 @@ from scrapy import Request
 import json
 import chompjs
 import re
+import uuid
 # KEYWORDS = "junior-developer-web"
 
 
@@ -40,7 +41,7 @@ class MonsterSpider(scrapy.Spider):
     def parse_text(self, response, company_link, title, title_link, date_posted, location, company,):
         description = self.cleanhtml(chompjs.parse_js_object(response.xpath(
             "//script[contains(., 'JobPosting')]/text()").extract()[0])["description"])
-        yield {"company_link": company_link, "job_title": title, "link": title_link, "activated_at": date_posted, "location": location, "company_name": company, "text": description}
+        yield {"company_link": company_link, "job_title": title, "link": title_link, "activated_at": date_posted, "job_id": uuid.uuid4(), "location": location, "company_name": company, "text": description}
 
     def cleanhtml(self, raw_html):
         cleanr = re.compile('<.*?>')

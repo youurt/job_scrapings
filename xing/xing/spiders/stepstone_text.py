@@ -9,20 +9,20 @@ class StepstoneTextSpider(scrapy.Spider):
     name = 'stepstone_text'
 
     def start_requests(self):
-        for link in pd.read_csv("res_stepstone.csv", converters={"link": lambda x: str(x)})["link"]:
+        for index, row in pd.read_csv("data_web_junior/stepstone/stepstone_raw.csv").iterrows():
             yield Request(
-                url=link,
+                url=row["link"],
                 dont_filter=True,
                 callback=self.parse_text,
-                cb_kwargs=dict(link=link))
+                cb_kwargs=dict(link=row["link"], job_id=row["job_id"]))
 
-    def parse_text(self, response, link):
+    def parse_text(self, response, link, job_id):
         text = self.cleanhtml("".join(response.css(
             ".js-app-ld-ContentBlock").getall()).strip())
         comp_name = "".join(response.css("h1").css(
             ".at-header-company-name::text").getall())
 
-        yield {"link": link, "text": text, "comp_name": comp_name}
+        yield {"link": link, "text": text, "comp_name": comp_name, "job_id": job_id}
 
     def cleanhtml(self, raw_html):
         cleanr = re.compile('<.*?>')

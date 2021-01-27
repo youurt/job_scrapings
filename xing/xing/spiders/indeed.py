@@ -1,8 +1,7 @@
+import uuid
 import scrapy
 from scrapy.http.request import Request
 from scrapy.selector import Selector
-import logging
-logger = logging.getLogger(__name__)
 
 
 #KEYWORDS = "junior+web+developer"
@@ -38,7 +37,7 @@ class IndeedSpider(scrapy.Spider):
                 ".sjcl").css(".location::text").getall())
             activated = "".join(html.css(
                 ".result-link-bar").css(".date::text").getall())
-            yield {"job_title": title, "link": link, "company_name": company, "location": location, "activated_at": activated}
+            yield {"job_title": title, "company_name": company, "location": location, "activated_at": activated, "job_id": uuid.uuid4(), "link": link}
 
         print(response)
         if 'span class="np"' in response.css(

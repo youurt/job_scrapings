@@ -4,7 +4,7 @@ import requests
 import json
 from datetime import datetime
 from scrapy.selector import Selector
-
+import uuid
 DAYS_FILTER = 30
 # ArgUMENTS -a [QUERY] eg Web%20Developer%20junior
 
@@ -59,7 +59,7 @@ class XingspiderSpider(scrapy.Spider):
         # res = any(
         #     el in text.lower() for el in FILTER)
         # if not res:
-        yield{"job_title": title, "company_name": company_name, "company_link": company_link, "link": link, "location": location, "days_diff": days_diff, "text": text.replace("\n", "").strip(), "activated_at": activated_at}
+        yield{"job_title": title, "company_name": company_name, "company_link": company_link, "link": link, "location": location, "days_diff": days_diff, "text": text.replace("\n", "").strip(), "activated_at": activated_at, "job_id": uuid.uuid4()}
 
         # yield {"title": title, "company_name": company_name, "link": link, "location": location, "days_diff": days_diff, "text": text.replace("\n", "").strip()}
 

@@ -1,21 +1,30 @@
+import re
 import pandas as pd
 import sys
 
-
-def clean_df(csv_file):
-    """
-    ARG1: MONTH_BOOL
-    """
-
-    df = pd.read_csv(csv_file)
-
-    df["job_title"] = df["job_title"].str.lower()
-    df["job_title"] = df["job_title"].str.lower()
-    # df["location"] = df["location"].str.lower()
-
-    # df = df[df["position"].str.contains(
-    #     'php|/^java$/|sap|.net|c#', regex=True) == False]
-    # df.to_csv("res_glassdoor.csv", index=False)
+"""
+    ARG1: Name of Site
+    ARG2: Topic
+"""
 
 
-clean_df("linkedin_raw.csv")
+df = pd.read_csv(f"data_{sys.argv[2]}/{sys.argv[1]}/{sys.argv[1]}_joined.csv")
+
+
+def cleanhtml(raw_html):
+
+    cleanr = re.compile('<.*?>')
+    cleantext = re.sub(cleanr, '', raw_html)
+    cleantext = cleantext.replace("\n", "")
+    cleantext = cleantext.replace("\t", "")
+    return cleantext.strip().lower()
+
+
+df["text"] = df["text"].astype(str).apply(lambda x: cleanhtml(x))
+
+
+df = df[df["text"].str.contains(
+    'php|/^java$/|sap|.net|c#', regex=True) == False]
+
+df.to_csv(
+    f"data_{sys.argv[2]}/{sys.argv[1]}/{sys.argv[1]}_cleaned.csv", index=False)

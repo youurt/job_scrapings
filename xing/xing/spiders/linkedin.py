@@ -1,11 +1,9 @@
-import logging
 import scrapy
 from scrapy import Request
 from scrapy.selector import Selector
+import uuid
 
 # KEYWORDS = "junior%20web%20developer"
-
-logger = logging.getLogger(__name__)
 
 
 class LinkedinSpider(scrapy.Spider):
@@ -30,7 +28,7 @@ class LinkedinSpider(scrapy.Spider):
                 ".job-result-card__location::text").getall())
             list_date = " ".join(Selector(text=element).css(
                 ".job-result-card__listdate::text").getall())
-            yield {"job_title": job_name, "link": link, "location": location, "activated_at": list_date}
+            yield {"link": link, "job_title": job_name, "location": location, "activated_at": list_date, "job_id": uuid.uuid4(), }
         print(response, response.status)
         if response.status == 200:
             self.start_ += 25
