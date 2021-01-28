@@ -9,7 +9,7 @@ class StepstoneTextSpider(scrapy.Spider):
     name = 'stepstone_text'
 
     def start_requests(self):
-        for index, row in pd.read_csv("data_web_junior/stepstone/stepstone_raw.csv").iterrows():
+        for index, row in pd.read_csv(f"data_{self.cat}/stepstone/stepstone_raw.csv").iterrows():
             yield Request(
                 url=row["link"],
                 dont_filter=True,

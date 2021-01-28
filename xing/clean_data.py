@@ -17,14 +17,24 @@ def cleanhtml(raw_html):
     cleantext = re.sub(cleanr, '', raw_html)
     cleantext = cleantext.replace("\n", "")
     cleantext = cleantext.replace("\t", "")
+    cleantext = cleantext.replace("\r", "")
     return cleantext.strip().lower()
 
 
 df["text"] = df["text"].astype(str).apply(lambda x: cleanhtml(x))
+df["job_title"] = df["job_title"].astype(str).apply(lambda x: x.lower())
 
 
-df = df[df["text"].str.contains(
-    'php|/^java$/|sap|.net|c#', regex=True) == False]
+# df = df[df["text"].str.contains(
+#     'php|/^java$/|sap|.net', regex=True) == False]
+
+# df = df[df["job_title"].str.contains(
+#     r"\bjava\b|\bphp\b|\bsap\b|\b.net\b|\bc#\b", regex=True) == False]
+
+
+df = df[df["job_title"].str.contains(
+    r"\bjava\b|\bphp\b|\bsap\b|\b.net\b|\bc#\b", regex=True) == False]
+
 
 df.to_csv(
     f"data_{sys.argv[2]}/{sys.argv[1]}/{sys.argv[1]}_cleaned.csv", index=False)

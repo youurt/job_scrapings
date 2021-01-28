@@ -3,9 +3,12 @@ import scrapy
 from scrapy.http.request import Request
 from scrapy.selector import Selector
 
-
+# data_web_junior
 #KEYWORDS = "junior+web+developer"
-#NO_GOES = "+-java+-php+-.net+-c%23"
+
+
+# data_analyst_junior
+#Keywords = "data+analyst+junior"
 
 
 class IndeedSpider(scrapy.Spider):
@@ -13,7 +16,7 @@ class IndeedSpider(scrapy.Spider):
 
     def start_requests(self):
         yield Request(
-            url=f"https://de.indeed.com/Jobs?q={self.search_params}{self.search_params_no}&l=Deutschland&radius=25&start",
+            url=f"https://de.indeed.com/Jobs?q={self.search_params}&l=Deutschland&radius=25&start",
             dont_filter=True,
             callback=self.parse_pages)
 

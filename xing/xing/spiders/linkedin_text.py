@@ -1,13 +1,14 @@
 import scrapy
 import pandas as pd
 from scrapy import Request
+import re
 
 
 class LinkedinTextSpider(scrapy.Spider):
     name = 'linkedin_text'
 
     def start_requests(self):
-        for index, row in pd.read_csv("data_web_junior/linkedin/linkedin_raw.csv").iterrows():
+        for index, row in pd.read_csv(f"data_{self.cat}/linkedin/linkedin_raw.csv").iterrows():
             yield Request(
                 url=row["link"],
                 dont_filter=True,
@@ -21,16 +22,21 @@ class LinkedinTextSpider(scrapy.Spider):
                 cb_kwargs=dict(link=row["link"], job_id=row["job_id"]))
 
     def parse_text(self, response, link, job_id):
-        print(response)
-        text = " ".join(response.css(".show-more-less-html__markup").css(
-            ".show-more-less-html__markup--clamp-after-5").getall())
+
+        text = self.cleanhtml(" ".join(response.css(".show-more-less-html__markup").css(
+            ".show-more-less-html__markup--clamp-after-5").getall()))
+
         company_name = " ".join(response.css(
             ".sub-nav-cta__optional-url").css("a::attr(title)").getall())
-        company_url = self.clean_company_name(" ".join(response.css(
-            ".sub-nav-cta__optional-url").css("a::attr(href)").getall()))
 
-        yield {"link": link, "text": text, "company_name": company_name, "company_url": company_url, "job_id": job_id}
+        print(link, company_name, job_id, text)
 
-    def clean_company_name(self, comp_name):
-        comp_n = comp_name.split("/")[4].split("?")[0].replace(".", "")
-        return f"https://www.linkedin.com/mwlite/company/{comp_n}"
+        yield {"link": link, "text": text, "company_name": company_name, "job_id": job_id}
+
+    def cleanhtml(self, raw_html):
+        cleanr = re.compile('<.*?>')
+        cleantext = re.sub(cleanr, '', raw_html)
+        cleantext = cleantext.replace("\n", "")
+        cleantext = cleantext.replace("\t", "")
+        cleantext = cleantext.replace("\r", "")
+        return cleantext.strip()

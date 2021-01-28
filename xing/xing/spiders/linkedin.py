@@ -4,6 +4,8 @@ from scrapy.selector import Selector
 import uuid
 
 # KEYWORDS = "junior%20web%20developer"
+# KEYWORDS DATA = "junior%20data%20analyst"
+# KEYWORDS WI = "wirtschaftsinformatiker"
 
 
 class LinkedinSpider(scrapy.Spider):

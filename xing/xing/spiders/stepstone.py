@@ -4,6 +4,7 @@ from scrapy.selector import Selector
 import uuid
 
 # ArgUMENTS -a [QUERY] eg junior%20frontend%20web%20developer
+# ArgUMENTS -a [QUERY] eg junior+data+analyst
 
 
 class StepstoneSpider(scrapy.Spider):

@@ -10,7 +10,7 @@ class GlassdoorTextSpider(scrapy.Spider):
     def start_requests(self):
         # for item in pd.read_csv(f"data_{self.topic}/glassdoor_raw.csv", converters={"link": lambda x: str(x)}):
 
-        for index, row in pd.read_csv("data_web_junior/glassdoor/glassdoor_raw.csv").iterrows():
+        for index, row in pd.read_csv(f"data_{self.cat}/glassdoor/glassdoor_raw.csv").iterrows():
             yield Request(
                 url=row['link'],
                 dont_filter=True,

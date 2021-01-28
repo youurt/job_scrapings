@@ -5,6 +5,7 @@ import chompjs
 import re
 import uuid
 # KEYWORDS = "junior-developer-web"
+# data analyst = "junior-data-analyst"
 
 
 class MonsterSpider(scrapy.Spider):

@@ -7,7 +7,7 @@ class IndeedTextSpider(scrapy.Spider):
     name = 'indeed_text'
 
     def start_requests(self):
-        for index, row in pd.read_csv(f"data_web_junior/indeed/indeed_raw.csv").iterrows():
+        for index, row in pd.read_csv(f"data_{self.cat}/indeed/indeed_raw.csv").iterrows():
             yield Request(
                 url=row["link"],
                 dont_filter=True,
